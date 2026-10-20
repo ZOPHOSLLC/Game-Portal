@@ -1,0 +1,155 @@
+@import "tailwindcss";
+@import "@fontsource-variable/plus-jakarta-sans";
+@import "@fontsource/space-mono/400.css";
+@import "@fontsource/press-start-2p/400.css";
+
+/* ============================================================================
+   Design system. Every value below comes from one scale; screens use these
+   classes instead of picking numbers by eye.
+
+   Spacing (4px grid):   4 · 8 · 12 · 16 · 24 · 32 · 48
+     inside a control group ........ 8   (gap-2)
+     between fields in a form ...... 16  (gap-4)
+     inside a card ................. 24  (p-6)  large card 32 (p-8)
+     between sections .............. 32  (gap-8)
+     page padding .................. 16 mobile, 24 tablet+; 32 top/bottom, 48 desktop
+
+   Type (size / line height):
+     title 24/32 · heading 18/28 · card title 16/24 · body 14/24 · control 14/20
+     caption 12/16 · eyebrow label 12/16 (monospace, uppercase)
+
+   Radius:  controls 8 (rounded-lg) · cards 12 (rounded-xl)
+            game frame 16 (rounded-2xl) · tags 6 (rounded-md)
+   Height:  small control 32 (h-8) · default control and field 40 (h-10)
+   ============================================================================ */
+
+@theme {
+  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", monospace;
+  --font-signature: "Press Start 2P", cursive;
+
+  --color-ink: #0a0a0a; /* page background */
+  --color-surface: #1a1a1a; /* cards, panels */
+  --color-surface-hover: #2a2a2a;
+  --color-line: #333333; /* borders */
+
+  --color-fg: #ffffff; /* primary text */
+  --color-muted: #a0a0a0; /* secondary text */
+
+  --color-cyan: #06b6d4; /* accent: buttons, links, active states */
+  --color-magenta: #00ffff; /* gradient partner for the wordmark */
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-lift: 0 18px 40px -18px rgba(6, 182, 212, 0.45), 0 0 0 1px rgba(6, 182, 212, 0.6);
+}
+
+@layer base {
+  html,
+  body {
+    @apply bg-ink text-fg antialiased;
+    font-family: var(--font-sans);
+  }
+  ::selection {
+    background: var(--color-magenta);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* Layout */
+  .page {
+    @apply mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12;
+  }
+
+  /* Surfaces */
+  .card {
+    @apply rounded-xl border border-line bg-surface p-6 shadow-card;
+  }
+  .card-lg {
+    @apply rounded-xl border border-line bg-surface p-8 shadow-card;
+  }
+
+  /* Type */
+  .title {
+    @apply text-2xl leading-8 font-semibold tracking-tight text-fg;
+  }
+  .heading {
+    @apply text-lg leading-7 font-semibold tracking-tight text-fg;
+  }
+  .card-title {
+    @apply text-base leading-6 font-semibold text-fg;
+  }
+  .body {
+    @apply text-sm leading-6 text-muted;
+  }
+  .caption {
+    @apply text-xs leading-4 text-muted;
+  }
+  .eyebrow {
+    @apply font-mono text-xs leading-4 tracking-wider text-muted uppercase;
+  }
+
+  /* Controls */
+  .field {
+    @apply h-10 w-full rounded-lg border border-line bg-ink px-3 text-sm leading-5 text-fg outline-none transition placeholder:text-muted focus:border-cyan focus:ring-2 focus:ring-cyan/20;
+  }
+  .chip {
+    @apply inline-flex h-8 items-center gap-1.5 rounded-lg border px-3 text-sm leading-5 font-medium whitespace-nowrap transition;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-md bg-cyan/10 px-2 py-0.5 text-xs leading-4 font-medium text-cyan;
+  }
+}
+
+/* Signature animated strip under the header. */
+@keyframes chase {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 18px 0;
+  }
+}
+.chase-strip {
+  height: 4px;
+  background-image: radial-gradient(circle, var(--color-cyan) 1.5px, transparent 1.6px);
+  background-size: 18px 4px;
+  background-repeat: repeat-x;
+  animation: chase 1.6s linear infinite;
+  opacity: 0.85;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chase-strip {
+    animation: none;
+  }
+}
+
+/* Wordmark: gradient text in the signature font. */
+.wordmark {
+  font-family: var(--font-signature);
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  background: linear-gradient(90deg, var(--color-cyan), var(--color-magenta));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Dotted screw corners on the game frame (the "cabinet" look). */
+.frame-bezel {
+  background-image: radial-gradient(circle, var(--color-line) 3px, transparent 3.5px),
+    radial-gradient(circle, var(--color-line) 3px, transparent 3.5px),
+    radial-gradient(circle, var(--color-line) 3px, transparent 3.5px),
+    radial-gradient(circle, var(--color-line) 3px, transparent 3.5px),
+    linear-gradient(160deg, var(--color-surface-hover), var(--color-surface));
+  background-position: 8px 8px, calc(100% - 8px) 8px, 8px calc(100% - 8px),
+    calc(100% - 8px) calc(100% - 8px), 0 0;
+  background-repeat: no-repeat;
+}

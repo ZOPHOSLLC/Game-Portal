@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Placeholder Game</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0a0a0a; overflow: hidden; font-family: sans-serif; }
+  canvas { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+let W, H;
+function resize() { W = c.width = innerWidth; H = c.height = innerHeight; }
+addEventListener('resize', resize);
+resize();
+
+let score = 0, timeLeft = 30, running = false, target = null, last = 0;
+
+function spawn() {
+  const r = 28 + Math.random() * 18;
+  target = {
+    x: r + Math.random() * (W - 2 * r),
+    y: r + 50 + Math.random() * (H - 2 * r - 50),
+    r
+  };
+}
+
+function start() {
+  score = 0; timeLeft = 30; running = true; last = performance.now();
+  spawn();
+}
+
+function hit(px, py) {
+  if (!running) { start(); return; }
+  const dx = px - target.x, dy = py - target.y;
+  if (dx * dx + dy * dy <= target.r * target.r) { score++; spawn(); }
+}
+
+c.addEventListener('pointerdown', (e) => {
+  const b = c.getBoundingClientRect();
+  hit((e.clientX - b.left) * (W / b.width), (e.clientY - b.top) * (H / b.height));
+});
+
+function text(t, x, y, size, color) {
+  ctx.fillStyle = color || '#fff';
+  ctx.font = `bold ${size}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText(t, x, y);
+}
+
+function frame(now) {
+  if (running) {
+    timeLeft -= (now - last) / 1000;
+    last = now;
+    if (timeLeft <= 0) { timeLeft = 0; running = false; target = null; }
+  }
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, W, H);
+
+  if (target) {
+    ctx.beginPath();
+    ctx.arc(target.x, target.y, target.r, 0, Math.PI * 2);
+    ctx.fillStyle = '#00bcd4';
+    ctx.fill();
+  }
+
+  text('Score: ' + score, 90, 34, 24);
+  text('Time: ' + Math.ceil(timeLeft), W - 80, 34, 24);
+
+  if (!running) {
+    if (timeLeft === 0) text('Game over! Score: ' + score, W / 2, H / 2 - 20, 36);
+    text(timeLeft === 0 ? 'Click to play again' : 'Click to start', W / 2, H / 2 + 24, 22, '#00bcd4');
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <rect width="300" height="200" fill="#111"/>
+  <circle cx="150" cy="90" r="46" fill="#00bcd4"/>
+  <circle cx="150" cy="90" r="26" fill="#111"/>
+  <circle cx="150" cy="90" r="10" fill="#00bcd4"/>
+  <text x="150" y="172" text-anchor="middle" font-family="sans-serif" font-size="20" font-weight="bold" fill="#fff">Placeholder Game</text>
+</svg>
