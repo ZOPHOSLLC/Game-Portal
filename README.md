@@ -1,2 +1,2 @@
 # Game-Portal
-Fully frontend of .studio game portal
+Full frontend of .studio game portal
